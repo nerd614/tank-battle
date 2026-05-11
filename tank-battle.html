@@ -135,8 +135,8 @@ const TILE = 30; // 780/26
 const TANK_SIZE = 28;
 const BULLET_SIZE = 6;
 const BULLET_SPEED = 5;
-const PLAYER_SPEED = 2.5;
-const ENEMY_SPEED = 1.2;
+const PLAYER_SPEED = 1.5;
+const ENEMY_SPEED = 0.8;
 const MAX_ENEMIES = 4;
 const SPAWN_DELAY = 120; // frames
 const ENEMY_SHOOT_DELAY = 60;
@@ -820,11 +820,16 @@ function update() {
   // Player movement
   if (game.player && game.player.alive) {
     let dx = 0, dy = 0;
-    game.player.dir = 0;
-    if (game.keys['ArrowUp']) { dy = -game.player.speed; game.player.dir = 0; }
-    else if (game.keys['ArrowDown']) { dy = game.player.speed; game.player.dir = 2; }
-    else if (game.keys['ArrowLeft']) { dx = -game.player.speed; game.player.dir = 3; }
-    else if (game.keys['ArrowRight']) { dx = game.player.speed; game.player.dir = 1; }
+
+    // Direction keys - set direction AND movement
+    if (game.keys['ArrowUp'])    { dy = -game.player.speed; game.player.dir = 0; }
+    if (game.keys['ArrowDown'])  { dy = game.player.speed; game.player.dir = 2; }
+    if (game.keys['ArrowLeft'])  { dx = -game.player.speed; game.player.dir = 3; }
+    if (game.keys['ArrowRight']) { dx = game.player.speed; game.player.dir = 1; }
+
+    // If opposing keys cancel out, no movement but keep direction
+    if (game.keys['ArrowUp'] && game.keys['ArrowDown']) dy = 0;
+    if (game.keys['ArrowLeft'] && game.keys['ArrowRight']) dx = 0;
 
     if (dx !== 0 || dy !== 0) {
       moveTank(game.player, dx, dy);
